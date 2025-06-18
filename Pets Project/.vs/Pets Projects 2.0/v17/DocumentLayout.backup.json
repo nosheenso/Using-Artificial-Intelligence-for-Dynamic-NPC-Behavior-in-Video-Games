@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Nosheen_game\\Pets Projects 2.0\\Pets Projects 2.0\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C0567F71-A682-E0D9-058E-06CBA46E98DD}|Assembly-CSharp.csproj|d:\\nosheen_game\\pets projects 2.0\\pets projects 2.0\\assets\\chatgptmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0567F71-A682-E0D9-058E-06CBA46E98DD}|Assembly-CSharp.csproj|solutionrelative:assets\\chatgptmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C0567F71-A682-E0D9-058E-06CBA46E98DD}|Assembly-CSharp.csproj|d:\\nosheen_game\\pets projects 2.0\\pets projects 2.0\\assets\\characteractions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C0567F71-A682-E0D9-058E-06CBA46E98DD}|Assembly-CSharp.csproj|solutionrelative:assets\\characteractions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ChatGPTManager.cs",
+              "DocumentMoniker": "D:\\Nosheen_game\\Pets Projects 2.0\\Pets Projects 2.0\\Assets\\ChatGPTManager.cs",
+              "RelativeDocumentMoniker": "Assets\\ChatGPTManager.cs",
+              "ToolTip": "D:\\Nosheen_game\\Pets Projects 2.0\\Pets Projects 2.0\\Assets\\ChatGPTManager.cs",
+              "RelativeToolTip": "Assets\\ChatGPTManager.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAD4v3cAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-01T05:40:11.686Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CharacterActions.cs",
+              "DocumentMoniker": "D:\\Nosheen_game\\Pets Projects 2.0\\Pets Projects 2.0\\Assets\\CharacterActions.cs",
+              "RelativeDocumentMoniker": "Assets\\CharacterActions.cs",
+              "ToolTip": "D:\\Nosheen_game\\Pets Projects 2.0\\Pets Projects 2.0\\Assets\\CharacterActions.cs",
+              "RelativeToolTip": "Assets\\CharacterActions.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAkwF0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-31T14:05:14.717Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
