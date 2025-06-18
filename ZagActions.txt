@@ -1,0 +1,6 @@
+Sleep (move to couch): This couch is lumpy.
+Eat (move to bowl): Why is my food bowl so far?
+Play (move to ball): This ball is beneath my dignity.
+Hide (move behind couch): I need some peace and quiet.
+Talk: Zag grumbles to Ziggy.
+Give Gift (move to gift spot): This gift is useless.

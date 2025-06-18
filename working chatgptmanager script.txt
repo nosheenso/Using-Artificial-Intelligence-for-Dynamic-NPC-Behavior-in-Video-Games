@@ -1,0 +1,206 @@
+/*
+nosheen sobhani
+251201056
+
+CS4490Z (thesis): Using ChatGPT for Dynamic NPC Behavior in Video Games
+*/
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using OpenAI;
+using UnityEngine.Events;
+using System.IO;
+using System.Threading.Tasks;
+
+public class ChatGPTManager : MonoBehaviour
+{
+    [TextArea(5, 20)]
+    public string personality; // Personality of the pets
+    [TextArea(5, 20)]
+    public string scene; // Description of the scene
+    public int maxResponseWordLimit = 20; // Increased word limit to allow for action triggers
+
+    public List<NPCAction> actions;
+
+    [System.Serializable]
+    public struct NPCAction
+    {
+        [TextArea(1, 5)]
+        public string actionKeyword;
+        [TextArea(2, 5)]
+        public string actionDescription;
+
+        public UnityEvent actionEvent;
+    }
+
+    public OnResponseEvent OnResponse;
+
+    [System.Serializable]
+    public class OnResponseEvent : UnityEvent<string> { }
+
+    private OpenAIApi openAI = new OpenAIApi();
+    private List<ChatMessage> messages = new List<ChatMessage>();
+    private string logFilePath = "D:/Users/nouransakr/Downloads/Pets Projects 2.0/Assets/ChatGPTConversationLog.txt";
+
+    public string getInstruction()
+    {
+        string instructions = "You are my pet cat and pet dog, named Zag and Ziggy. You can talk and also bark (Ziggy) or meow (Zag). " +
+                            "You can move to the couch to sleep, go to your bowls to eat, play with your toys, talk, or hide. " +
+                            "You can do things together or separately. " +
+                            "You must reply to each other and in the reply you must include the action keyword that the other pet will perform an action. \n" +
+                            "Please do not break character. Keep your responses under " + maxResponseWordLimit + " words. \n" +
+                            "Your personality is: " + personality + " and the scene is: " + scene + ". \n" +
+                            buildActionInstructions();
+
+        return instructions;
+    }
+
+    public string buildActionInstructions()
+    {
+        string instructions = "";
+
+        foreach (var item in actions)
+        {
+            instructions += "When you want to " + item.actionDescription + ", include the keyword: \"" + item.actionKeyword + "\". \n";
+        }
+        return instructions;
+    }
+
+    public async Task AskChatGPT(string newText)
+    {
+        string fullPrompt = getInstruction() + "\n\n" + newText;
+
+        ChatMessage newMessage = new ChatMessage();
+        newMessage.Content = fullPrompt;
+        newMessage.Role = "user";
+
+        messages.Add(newMessage);
+        LogMessage("Input: " + newText);
+
+        CreateChatCompletionRequest request = new CreateChatCompletionRequest();
+        request.Messages = messages;
+        request.Model = "gpt-3.5-turbo";
+
+        var response = await openAI.CreateChatCompletion(request);
+
+        if (response.Choices != null && response.Choices.Count > 0)
+        {
+            var chatResponse = response.Choices[0].Message;
+
+            bool actionTriggered = false;
+
+            foreach (var item in actions)
+            {
+                if (chatResponse.Content.Contains(item.actionKeyword))
+                {
+                    string textNoKeyword = chatResponse.Content.Replace(item.actionKeyword, "");
+                    chatResponse.Content = textNoKeyword;
+                    item.actionEvent.Invoke();
+                    actionTriggered = true;
+                }
+            }
+
+            messages.Add(chatResponse);
+            LogMessage("ChatGPT: " + chatResponse.Content);
+            Debug.Log(chatResponse.Content);
+
+            if (actionTriggered)
+            {
+                StartCoroutine(DelayedAction());
+            }
+
+            OnResponse.Invoke(chatResponse.Content);
+        }
+    }
+
+    private IEnumerator DelayedAction()
+    {
+        yield return new WaitForSeconds(3f);
+        LogMessage("Action Delay.");
+    }
+
+    public void MoveCharacter(Vector3 targetPosition, bool smooth = true)
+    {
+        if (smooth)
+        {
+            StartCoroutine(SmoothMove(targetPosition));
+        }
+        else
+        {
+            transform.position = targetPosition;
+        }
+    }
+
+    private IEnumerator SmoothMove(Vector3 targetPosition)
+    {
+        float duration = 1.0f;
+        Vector3 startPosition = transform.position;
+        float elapsed = 0;
+
+        while (elapsed < duration)
+        {
+            transform.position = Vector3.Lerp(startPosition, targetPosition, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = targetPosition;
+    }
+
+    private void LogMessage(string message)
+    {
+        Debug.Log("Logging message: " + message);
+        try
+        {
+            using (StreamWriter writer = new StreamWriter(logFilePath, true))
+            {
+                writer.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ": " + message);
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("Failed to log message: " + ex.Message);
+        }
+    }
+
+    // NPC Actions
+    public void catMoveToEat() { MoveCharacter(new Vector3(-1779, -454, 1), smooth: true); }
+    public void catMoveToSleep() { MoveCharacter(new Vector3(-1188, -96, -1), smooth: true); }
+    public void catMoveToPlay() { MoveCharacter(new Vector3(1686, -290, 1), smooth: true); }
+    public void catMoveToTalk() { LogMessage("Zag (Cat) is talking."); }
+    public void catMoveToHide() { MoveCharacter(new Vector3(-1140, -236, 1), smooth: true); }
+    public void dogMoveToEat() { MoveCharacter(new Vector3(-2140, -600, 1), smooth: true); }
+    public void dogMoveToSleep() { MoveCharacter(new Vector3(-680, -70, -1), smooth: true); }
+    public void dogMoveToPlay() { MoveCharacter(new Vector3(1720, -230, 1), smooth: true); }
+    public void dogMoveToTalk() { LogMessage("Ziggy (Dog) is talking."); }
+    public void dogMoveToHide() { MoveCharacter(new Vector3(-2060, -750, 1), smooth: true); }
+
+    public void StartChatLoop(string newText, int maxResponses = 30)
+    {
+        StartCoroutine(ChatLoopCoroutine(newText, maxResponses));
+    }
+
+    private IEnumerator ChatLoopCoroutine(string newText, int maxResponses)
+    {
+        int responseCount = 0;
+
+        while (responseCount < maxResponses)
+        {
+            responseCount++;
+            yield return AskChatGPT(newText);
+            yield return new WaitForSeconds(6f);
+        }
+    }
+
+    void Start()
+    {
+        StartChatLoop("\"Zag, I'm feeling a bit sleepy.\",\r\n            " +
+            "\"I'm starving. When was the last time we ate?\",\r\n            " +
+            "\"Hi Zag, let's talk about playing!\",\r\n            " +
+            "\"I feel like hiding somewhere.\"", maxResponses: 30);
+    }
+
+    void Update()
+    {
+    }
+}
